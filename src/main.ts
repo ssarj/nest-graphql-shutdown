@@ -33,9 +33,12 @@ export class ModelResolver {
 
 @Module({
   imports: [
-    // NOTE: when this is included Service.onApplicationShutdown is never called
     GraphQLModule.forRoot({
-      autoSchemaFile: true
+      autoSchemaFile: true,
+      // If we don't set stopOnTerminationSignals to false, the apollo server
+      // also listens to signals and kills our process before all nest lifecycle
+      // events fire (in our case onApplicationShutdown is never called)
+      stopOnTerminationSignals: false,
     })
   ],
   providers: [Service, ModelResolver],
